@@ -7,14 +7,14 @@
     <title>AngularJS project</title>
   </head>
   <body>
-    <div id="list" ng-controller='ShoppingListController as list'>
+    <div ng-controller='ShoppingListController as list'>
       <input type="text" ng-model="list.itemName" placeholder="item name">
       <input type="text" ng-model="list.itemQuantity" placeholder="item quantity">
-      <button type="button" ng-click="list.additem()">Add item</button>
+      <button type="button" ng-click="list.additem();">Add item</button>
 </div>
-    <div  ng-controller='ShoppingListService as showlist'>
+    <div  ng-controller='ShoppingListShow as showlist'>
       <ol>
-        <li ng-repeat="item in showlist">{{item}}</li>
+        <li ng-repeat="item in showlist.items">{{item.quantity}} of {{item.name}}</li>
       </ol>
     </div>
   </body>

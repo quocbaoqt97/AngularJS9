@@ -3,23 +3,18 @@
   angular.module('webapp',[])
   .controller('ShoppingListController',ShoppingListController)
   .controller('ShoppingListShow',ShoppingListShow)
-  .provider('ShoppingListService',ShoppingListService);
+  .service('ShoppingListService',ShoppingListService);
   ShoppingListController.$inject=['ShoppingListService'];
   function ShoppingListController(ShoppingListService){
     var list = this;
     list.itemName = "";
     list.itemQuantity = "";
     list.additem = function(){
-      try{
-        ShoppingListService.addItem(list.itemName,list.itemQuantity);
-      }
-      catch(error){
-        list.errorMessage = error.Message;
-      }
+    ShoppingListService.addItem(list.itemName,list.itemQuantity);
     };
   }
   ShoppingListShow.$inject=['ShoppingListService'];
-  function ShoppingListShow('ShoppingListService'){
+  function ShoppingListShow(ShoppingListService){
     var showlist = this;
     showlist.items = ShoppingListService.getItems();
   }
