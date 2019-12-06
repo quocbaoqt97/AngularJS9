@@ -1,36 +1,73 @@
 (function(){
   'use strict';
   angular.module('webapp',[])
-  .controller('ShoppingListController',ShoppingListController)
-  .controller('ShoppingListShow',ShoppingListShow)
-  .service('ShoppingListService',ShoppingListService);
-  ShoppingListController.$inject=['ShoppingListService'];
-  function ShoppingListController(ShoppingListService){
-    var list = this;
-    list.itemName = "";
-    list.itemQuantity = "";
-    list.additem = function(){
-    ShoppingListService.addItem(list.itemName,list.itemQuantity);
+  .controller('ShoppingListController1',ShoppingListController1)
+  .controller('ShoppingListController2',ShoppingListController2)
+  .factory('ShoppingListFactory',ShoppingListFactory);
+  ShoppingListController1.$inject=['ShoppingListFactory'];
+  function ShoppingListController1(ShoppingListFactory){
+    var list1 = this;
+    var shoppingList = ShoppingListFactory();
+    list1.items = shoppingList.getItems();
+    list1.itemName = "";
+    list1.itemQuantity = "";
+    list1.additem = function(){
+      try{
+        shoppingList.addItem(list1.itemName,list1.itemQuantity);
+      }
+      catch(error){
+        list1.errorMessage = error.message;
+      }
+
+    };
+    list1.removeItem = function(itemIndex){
+      shoppingList.removeItem(itemIndex);
     };
   }
-  ShoppingListShow.$inject=['ShoppingListService'];
-  function ShoppingListShow(ShoppingListService){
-    var showlist = this;
-    showlist.items = ShoppingListService.getItems();
+  ShoppingListController2.$inject=['ShoppingListFactory'];
+  function ShoppingListController2(ShoppingListFactory){
+    var list2 = this;
+    var shoppingList = ShoppingListFactory(3);
+    list2.items = shoppingList.getItems();
+    list2.itemName = "";
+    list2.itemQuantity = "";
+    list2.additem = function(){
+      try{
+        shoppingList.addItem(list2.itemName,list2.itemQuantity);
+      }
+      catch(error){
+        list2.errorMessage = error.message;
+      }
+    };
+    list2.removeItem = function(itemIndex){
+      shoppingList.removeItem(itemIndex);
+    };
   }
-  function ShoppingListService(){
+  function ShoppingListService(maxItems){
     var service = this;
     var items=[];
     service.addItem = function(itemname,itemquantity){
+    if(maxItems==undefined||maxItems!=undefined&&items.length<maxItems){
     var item = {
       name:itemname,
       quantity:itemquantity
     };
-    items.push(item);
+    items.push(item);}
+    else
+    throw new Error("Max items ("+maxItems+") reached.");
+    };
+    service.removeItem = function(itemIndex){
+      items.splice(itemIndex,1);
     };
     service.getItems = function(){
       return items;
     };
+  }
+  function ShoppingListFactory(){
+    var factory = function(maxItems){
+      return new ShoppingListService(maxItems);
+    };
+    return factory;
   }
 
 })();
